@@ -1,0 +1,55 @@
+import java.util.Scanner;
+public class allsumavelowesthigest {
+    static int num;
+   public static void main(String[] args) 
+   {
+        int lowest = Integer.MAX_VALUE, sl = Integer.MAX_VALUE, highest = 0, sh = 0;
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the number of elements: ");
+        int co=0, ce=0;
+        int n = scanner.nextInt();
+        System.out.println("Enter the elements :");
+        int sum = 0, evenSum = 0, oddSum = 0;
+        int  N = n;
+        for (int i=0;i<n;i++)
+        {
+            int num = scanner.nextInt();
+            sum += num;
+            if (num % 2 == 0) {
+                evenSum += num;
+                ce++;
+            } else {
+                oddSum += num;
+                co++;
+            }
+            N = N - 1;
+            if (num < lowest)
+            {
+                sl = lowest;
+                lowest = num;
+            }
+            else if (num < sl)
+                sl = num;
+            if (num > highest) 
+            {
+                sh = highest;
+                highest = num ;
+            } 
+            else if (num> sh && num  != highest) 
+                sh = num ;
+       }
+        double average = (double) sum / n;
+        double evenAverage = (double) evenSum / ce; 
+        double oddAverage = (double) oddSum / co;
+        System.out.println("Sum: " + sum);
+        System.out.println("Average: " + average);
+        System.out.println("Even sum: " + evenSum);
+        System.out.println("Even average: " + evenAverage);
+        System.out.println("Odd sum: " + oddSum);
+        System.out.println("Odd average: " + oddAverage);
+        System.out.println("Lowest: " + lowest);
+        System.out.println("Second lowest: " + sl);
+        System.out.println("Second highest: " + sh);
+        System.out.println("Highest: " + highest);
+   }
+}
