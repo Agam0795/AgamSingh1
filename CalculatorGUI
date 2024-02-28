@@ -1,0 +1,132 @@
+import javax.swing.*;
+import java.awt.*;
+
+class CalculatorGUI {
+    private JTextField inputField;
+    private JButton[] numberButtons;
+    private JButton addButton, subtractButton, multiplyButton, divideButton, clearButton, dotButton, equalsButton;
+
+    private double firstOperand = 0;
+    private String operator = "";
+
+    public CalculatorGUI() {
+        JFrame frame = new JFrame();
+        frame.setTitle("Calculator");
+        frame.setSize(300, 500);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel panel = new JPanel(new GridLayout(4, 4));
+        JPanel tfPanel = new JPanel(new GridLayout(1, 3));
+
+        inputField = new JTextField();
+        inputField.setFont(new Font("Arial", Font.PLAIN, 24));
+        inputField.setHorizontalAlignment(JTextField.RIGHT);
+        inputField.setEditable(false);
+        tfPanel.add(inputField);
+
+        numberButtons = new JButton[10];
+        for (int i = 0; i < 10; i++) {
+            numberButtons[i] = new JButton(Integer.toString(i));
+            numberButtons[i].setFont(new Font("Arial", Font.PLAIN, 18));
+            final int digit = i;
+            numberButtons[i].addActionListener(e -> appendToInputField(Integer.toString(digit)));
+            panel.add(numberButtons[i]);
+        }
+
+        addButton = createOperatorButton("+");
+        subtractButton = createOperatorButton("-");
+        multiplyButton = createOperatorButton("*");
+        divideButton = createOperatorButton("/");
+        clearButton = createOperatorButton("C");
+        dotButton = createOperatorButton(".");
+        equalsButton = createOperatorButton("=");
+
+        panel.add(addButton);
+        panel.add(subtractButton);
+        panel.add(multiplyButton);
+        panel.add(divideButton);
+        panel.add(clearButton);
+        panel.add(dotButton);
+        panel.add(equalsButton);
+
+        frame.add(tfPanel, BorderLayout.NORTH);
+        frame.add(panel, BorderLayout.CENTER);
+
+        frame.setVisible(true);
+    }
+
+    private JButton createOperatorButton(String label) 
+    {
+        JButton button = new JButton(label);
+        button.setFont(new Font("Arial", Font.PLAIN, 18));
+
+        if (label.equals("=")) {
+            button.addActionListener(e -> calculateResult());
+        } else if (label.equals("C")) {
+            button.addActionListener(e -> clearInputField());
+        } else {
+            button.addActionListener(e -> handleOperator(label));
+        }
+
+        return button;
+    }
+
+    private void appendToInputField(String text) {
+        inputField.setText(inputField.getText() + text);
+    }
+
+    private void clearInputField() {
+        inputField.setText("");
+        firstOperand = 0;
+        operator = "";
+    }
+
+    private void handleOperator(String op) {
+        if (!operator.isEmpty()) {
+            return; // Allow only one operator at a time
+        }
+
+        if (inputField.getText().isEmpty()) {
+            firstOperand = 0;
+        } else {
+            firstOperand = Double.parseDouble(inputField.getText());
+        }
+
+        operator = op;
+        inputField.setText("");
+    }
+
+    private void calculateResult() {
+        if (!operator.isEmpty() && !inputField.getText().isEmpty()) {
+            double secondOperand = Double.parseDouble(inputField.getText());
+            double result = 0;
+
+            switch (operator) {
+                case "+":
+                    result = firstOperand + secondOperand;
+                    break;
+                case "-":
+                    result = firstOperand - secondOperand;
+                    break;
+                case "*":
+                    result = firstOperand * secondOperand;
+                    break;
+                case "/":
+                    if (secondOperand != 0) {
+                        result = firstOperand / secondOperand;
+                    } else {
+                        inputField.setText("Error");
+                        return;
+                    }
+                    break;
+            }
+
+            inputField.setText(Double.toString(result));
+            operator = "";
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new CalculatorGUI());
+    }
+}
