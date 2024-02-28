@@ -1,0 +1,140 @@
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
+
+class Demo
+{
+    JTextField f1,f2,f3,tf;
+   
+    class MyActionListener implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent ae)
+        {
+            JButton btn = (JButton) ae.getSource();
+            String data = tf.getText() + btn.getText();
+            tf.setText(data);
+        }  
+    }    
+   
+    class MyTFListener extends MouseAdapter
+    {
+        @Override
+        public void mouseClicked(MouseEvent e)
+        {
+            tf = (JTextField) e.getSource();
+        }
+    }
+
+    class CalcListener implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent ae)
+        {
+            JButton btn = (JButton) ae.getSource();
+            String op = btn.getText();
+           
+            if(op.equals("+"))
+            {
+                int a = Integer.parseInt(f1.getText());
+                int b = Integer.parseInt(f1.getText());
+                int c = a + b;
+                f1.setText(Integer.toString(c));
+            }
+            else if(op.equals("-"))
+            {
+                int a = Integer.parseInt(f1.getText());
+                int b = Integer.parseInt(f1.getText());
+                int c = a - b;
+                f1.setText(Integer.toString(c));
+            }  
+            else if(op.equals("*"))
+            {
+                int a = Integer.parseInt(f1.getText());
+                int b = Integer.parseInt(f1.getText());
+                int c = a * b;
+                f1.setText(Integer.toString(c));
+            }
+            else if(op.equals("/"))
+            {
+                int a = Integer.parseInt(f1.getText());
+                int b = Integer.parseInt(f1.getText());
+                int c = a / b;
+                f1.setText(Integer.toString(c));
+            }            
+        }  
+    }    
+    Demo()
+    {
+        JFrame frame = new JFrame("Calc");
+        frame.setSize(300,300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel bPanel = new JPanel(new GridLayout(4,4));
+        JPanel tPanel = new JPanel(new GridLayout(1,3));
+       
+        for(int i=0;i<=9;i++)
+        {
+            JButton btn = new JButton(Integer.toString(i));
+            btn.addActionListener(new MyActionListener());
+            bPanel.add(btn);            
+        }
+       
+        JButton btna = new JButton("+");
+        JButton btnb = new JButton("-");
+        JButton btnc = new JButton("*");
+        JButton btnd = new JButton("/");
+        JButton btne = new JButton("C");
+        JButton btnf = new JButton(".");  
+       
+        btna.addActionListener(new CalcListener());
+        btnb.addActionListener(new CalcListener());
+        btnc.addActionListener(new CalcListener());
+        btnd.addActionListener(new CalcListener());
+       
+        btne.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae)
+            {
+                f1.setText("");
+            }
+        });
+       
+        f1 = new JTextField();
+        tf = f1;
+       
+        f1.addMouseListener(new MyTFListener());
+       
+        f1.setPreferredSize(new Dimension(100,40));
+       
+        bPanel.add(btna);
+        bPanel.add(btnb);
+        bPanel.add(btnc);
+        bPanel.add(btnd);
+        bPanel.add(btne);
+        bPanel.add(btnf);        
+       
+        tPanel.add(f1);    
+       
+        frame.add(tPanel,BorderLayout.NORTH);
+        frame.add(bPanel,BorderLayout.CENTER);
+       
+        frame.setVisible(true);        
+    }
+   
+    public static void main(String[] args)
+    {
+        Demo dm = new Demo();
+    }
+}
