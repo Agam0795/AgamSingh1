@@ -1,0 +1,63 @@
+import javax.swing.*;
+import java.awt.*;
+
+public class LoginPage extends JFrame 
+{
+
+    private JLabel usernameLabel;
+    private JTextField usernameField;
+    private JLabel passwordLabel;
+    private JPasswordField passwordField;
+    private JButton loginButton;
+
+    public LoginPage() 
+    {
+        super("Login");
+
+        usernameLabel = new JLabel("Username:");
+        usernameField = new JTextField();
+
+        passwordLabel = new JLabel("Password:");
+        passwordField = new JPasswordField();
+
+        loginButton = new JButton("Login");
+        loginButton.addActionListener(e -> 
+        {
+            String enteredUsername = usernameField.getText();
+            char[] enteredPasswordChars = passwordField.getPassword();
+            String enteredPassword = new String(enteredPasswordChars);
+
+            if (isValidUser(enteredUsername, enteredPassword)) 
+            {
+                JOptionPane.showMessageDialog(this, "Login successful!");
+            } 
+            else 
+            {
+                JOptionPane.showMessageDialog(this, "Invalid username or password. Please try again.");
+            }
+
+            passwordField.setText("");
+        });
+
+        add(usernameLabel);
+        add(usernameField);
+        add(passwordLabel);
+        add(passwordField);
+        add(loginButton);
+
+        setLayout(new GridLayout(3, 2));
+        setSize(300, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
+    }
+
+    private boolean isValidUser(String username, String password) 
+    {
+        return "admin".equals(username) && "password".equals(password);
+    }
+
+    public static void main(String[] args) 
+    {
+        new LoginPage();
+    }
+}
