@@ -1,0 +1,49 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class PrimeNumberThreadsApp {
+   PrimeNumberThreadsApp() {
+   }
+
+   public static void main(String[] var0) {
+      Scanner var1 = new Scanner(System.in);
+      System.out.print("Enter the number of threads: ");
+      int var2 = var1.nextInt();
+      System.out.print("Enter the start number: ");
+      int var3 = var1.nextInt();
+      System.out.print("Enter the end number: ");
+      int var4 = var1.nextInt();
+      long var5 = System.currentTimeMillis();
+      PrimeCalculator[] var7 = new PrimeCalculator[var2];
+      int var8 = (var4 - var3 + 1) / var2;
+
+      int var11;
+      for(int var9 = 0; var9 < var2; ++var9) {
+         int var10 = var3 + var9 * var8;
+         var11 = var9 == var2 - 1 ? var4 : var10 + var8 - 1;
+         var7[var9] = new PrimeCalculator(var10, var11);
+         var7[var9].start();
+      }
+
+      ArrayList var16 = new ArrayList();
+      PrimeCalculator[] var17 = var7;
+      var11 = var7.length;
+
+      for(int var12 = 0; var12 < var11; ++var12) {
+         PrimeCalculator var13 = var17[var12];
+
+         try {
+            var13.join();
+            var16.addAll(var13.getPrimes());
+         } catch (InterruptedException var15) {
+            var15.printStackTrace();
+         }
+      }
+
+      long var18 = System.currentTimeMillis();
+      long var19 = var18 - var5;
+      System.out.println("Total prime numbers found: " + var16.size());
+      System.out.println("Prime numbers: " + String.valueOf(var16));
+      System.out.println("Total time taken (ms): " + var19);
+   }
+}
