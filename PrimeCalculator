@@ -1,0 +1,98 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PrimeCalculator extends Thread 
+{
+    private final int start;
+    private final int end;
+    private List<Integer> primes;
+
+    public PrimeCalculator(int start, int end) 
+    {
+        this.start = start;
+        this.end = end;
+        this.primes = new ArrayList<>();
+    }
+
+    @Override
+    public void run() 
+    {
+        for (int num = start; num <= end; num++) 
+        {
+            if (isPrime(num)) {
+                primes.add(num);
+            }
+        }
+    }
+
+    private boolean isPrime(int num) 
+    {
+        if (num <= 1) 
+        {
+            return false;
+        }
+        for (int i = 2; i <= Math.sqrt(num); i++) 
+        {
+            if (num % i == 0) 
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public List<Integer> getPrimes() 
+    {
+        return primes;
+    }
+}
+
+class PrimeNumber
+{
+    public static void main(String[] args) 
+    {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter the number of threads: ");
+        int numThreads = sc.nextInt();
+
+        System.out.print("Enter the start number: ");
+        int startNum = sc.nextInt();
+
+        System.out.print("Enter the end number: ");
+        int endNum = sc.nextInt();
+
+        long startTime = System.currentTimeMillis();
+        PrimeCalculator[] calculators = new PrimeCalculator[numThreads];
+        int numbersPerThread = (endNum - startNum + 1) / numThreads;
+
+        for (int i = 0; i < numThreads; i++) 
+        {
+            int threadStart = startNum + i * numbersPerThread;
+            int threadEnd = (i == numThreads - 1) ? endNum : threadStart + numbersPerThread - 1;
+            calculators[i] = new PrimeCalculator(threadStart, threadEnd);
+            calculators[i].start();
+        }
+
+        List<Integer> allPrimes = new ArrayList<>();
+        for (PrimeCalculator calculator : calculators) 
+        {
+            try {
+                calculator.join();
+                allPrimes.addAll(calculator.getPrimes());
+            } catch (InterruptedException e) 
+            {
+                e.printStackTrace();
+            }
+        }
+
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+
+        System.out.println("Total prime numbers found: " + allPrimes.size());
+        System.out.println("Prime numbers: " + allPrimes);
+        System.out.println("Total time taken (ms): " + totalTime);
+        sc.close();
+    }
+}
