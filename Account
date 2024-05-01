@@ -1,0 +1,289 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class Account 
+{
+    private int accountNumber;
+    private double accountBalance;
+    private String accountName;
+
+    public Account() 
+    {
+        accountNumber = 0;
+        accountBalance = 0.0;
+        accountName = "";
+    }
+
+    public Account(int accountNumber, double accountBalance, String accountName) 
+    {
+        setAccountNumber(accountNumber);
+        setAccountBalance(accountBalance);
+        setAccountName(accountName);
+    }
+
+    public String getAccountName() 
+    {
+        return accountName;
+    }
+
+    public boolean setAccountName(String accountName) 
+    {
+        if (isValidAccountName(accountName)) 
+        {
+            this.accountName = accountName;
+            return true;
+        }
+        return false;
+    }
+
+    public int getAccountNumber() 
+    {
+        return accountNumber;
+    }
+
+    public boolean setAccountNumber(int accountNumber) 
+    {
+        if (isValidAccountNumber(accountNumber)) 
+        {
+            this.accountNumber = accountNumber;
+            return true;
+        }
+        return false;
+    }
+
+    public double getAccountBalance() 
+    {
+        return accountBalance;
+    }
+
+    public boolean setAccountBalance(double accountBalance) 
+    {
+        if (isValidAccountBalance(accountBalance)) 
+        {
+            this.accountBalance = accountBalance;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean equals(Account other) 
+    {
+        return this.accountNumber == other.accountNumber &&
+               this.accountBalance == other.accountBalance &&
+               this.accountName.equals(other.accountName);
+    }
+
+    public String toString() 
+    {
+        return "Account Number: " + accountNumber + "\n" +
+               "Account Name: " + accountName + "\n" +
+               "Account Balance: " + accountBalance;
+    }
+
+    private boolean isValidAccountName(String name) 
+    {
+        return name.matches("[a-zA-Z\\-\\s']*") && name.length() >= 4;
+    }
+
+    private boolean isValidAccountNumber(int number) 
+    {
+        return (number >= 10000 && number <= 999999999);
+    }
+
+    private boolean isValidAccountBalance(double balance) 
+    {
+        return Math.abs(balance * 100) == Math.floor(Math.abs(balance * 100));
+    }
+}
+
+enum BranchLocations 
+{
+    BRANCH_A,
+    BRANCH_B,
+    BRANCH_C,
+    BRANCH_D,
+    BRANCH_E
+}
+
+class Bank 
+{
+    private String bankName;
+    private BranchLocations branchLocation;
+    private List<Account> accounts;
+
+    public Bank() 
+    {
+        bankName = "";
+        branchLocation = BranchLocations.BRANCH_A;
+        accounts = new ArrayList<>();
+    }
+
+    public Bank(String bankName, BranchLocations branchLocation) 
+    {
+        setBankName(bankName);
+        setBranchLocation(branchLocation);
+        accounts = new ArrayList<>();
+    }
+
+    public String getBankName() 
+    {
+        return bankName;
+    }
+
+    public boolean setBankName(String bankName) 
+    {
+        if (isValidBankName(bankName)) 
+        {
+            this.bankName = bankName;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean setBranchLocation(BranchLocations branchLocation) 
+    {
+        this.branchLocation = branchLocation;
+        return true;
+    }
+
+    public String getBranchLocation() 
+    {
+        return branchLocation.toString();
+    }
+
+    public Account getAccountByNumber(int accountNumber)
+    {
+        for (Account account : accounts) 
+        {
+            if (account.getAccountNumber() == accountNumber) 
+            {
+                return account;
+            }
+        }
+        return new Account();
+    }
+
+    public boolean addAccount(Account account) 
+    {
+        for (Account acc : accounts) 
+        {
+            if (acc.getAccountNumber() == account.getAccountNumber()) 
+            {
+                return false; 
+            }
+        }
+        accounts.add(account);
+        return true;
+    }
+
+    public Account viewAccount(int accountNumber) 
+    {
+        for (Account account : accounts) 
+        {
+            if (account.getAccountNumber() == accountNumber) 
+            {
+                return account;
+            }
+        }
+        return new Account();
+    }
+
+    public Account viewAccount(byte index) 
+    {
+        if (index >= 0 && index < accounts.size()) 
+        {
+            return accounts.get(index);
+        }
+        return new Account();
+    }
+
+    public boolean modifyAccount(int accountNumber, String newName, double newBalance) 
+    {
+        Account account = getAccountByNumber(accountNumber);
+        if (account.getAccountNumber() == 0) 
+        {
+            return false; 
+        }
+
+        boolean nameValid = account.setAccountName(newName);
+        boolean balanceValid = account.setAccountBalance(newBalance);
+
+        return nameValid && balanceValid;
+    }
+
+    public boolean deleteAccount(int accountNumber) 
+    {
+        for (Account account : accounts) 
+        {
+            if (account.getAccountNumber() == accountNumber) 
+            {
+                accounts.remove(account);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean deleteAccount(byte index) 
+    {
+        if (index >= 0 && index < accounts.size()) 
+        {
+            accounts.remove(index);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isValidBankName(String name) 
+    {
+        return name.matches("[a-zA-Z0-9&\\s]*") && name.length() >= 8;
+    }
+}
+
+public class accuntmain 
+{
+    public static void main(String[] args) 
+    {
+        Bank bank = new Bank("MyBank123", BranchLocations.BRANCH_C);
+
+        Account account1 = new Account();
+        account1.setAccountNumber(12345);
+        account1.setAccountBalance(1000.0);
+        account1.setAccountName("John Doe");
+
+        if (bank.addAccount(account1)) 
+        {
+            System.out.println("Account added successfully.");
+        } 
+        else 
+        {
+            System.out.println("Account not added. Account number already exists.");
+        }
+
+        Account account2 = new Account(54321, 500.5, "Jane Smith");
+        if (bank.addAccount(account2)) 
+        {
+            System.out.println("Account added successfully.");
+        } 
+        else 
+        {
+            System.out.println("Account not added. Account number already exists.");
+        }
+
+        Account retrievedAccount = bank.viewAccount(12345);
+        System.out.println(retrievedAccount);
+
+        bank.modifyAccount(12345, "John Doe Jr.", 1500.0);
+        Account modifiedAccount = bank.viewAccount((byte) 0);
+        System.out.println(modifiedAccount);
+
+        if (bank.deleteAccount(54321)) 
+        {
+            System.out.println("Account deleted successfully.");
+        } 
+        else 
+        {
+            System.out.println("Account not found or not deleted.");
+        }
+    }
+}
